@@ -17,14 +17,31 @@ Y = tf.placeholder(tf.float32, name="Y")
 w = tf.Variable(0.0, name='weights')
 b = tf.Variable(0.0, name='bias')
 
+
+def huber_loss(labels, predictions, delta=1.0):
+    residual = tf.abs(predictions - labels)
+    condition = tf.less(residual, delta)
+    small_res = .5 * tf.square(residual)
+    large_res = delta * residual - .5 * tf.square(delta)
+    return tf.where(condition, small_res, large_res)
+
 Y_predicted = X*w + b
-loss = tf.square(Y - Y_predicted, name='loss')
+loss = huber_loss(Y, Y_predicted)
 
 optimizer = tf.train.GradientDescentOptimizer(learning_rate=0.001).minimize(loss)
 
 with tf.Session() as sess:
     sess.run(tf.global_variables_initializer())
+    writer = tf.summary.FileWriter('./graph/03/linear_reg', sess.graph)
     for i in range(100):
         for x, y in data:
             sess.run(optimizer, feed_dict={X: x, Y: y})
+        print 'Epoch %d' % i
     w_value, b_value = sess.run([w, b])
+
+X, Y = data.T[0], data.T[1]
+plt.ion()
+plt.plot(X, Y, 'bo', label='Real data')
+plt.plot(X, X*w_value + b_value, 'r', label='Predicted data')
+plt.legend()
+plt.show()

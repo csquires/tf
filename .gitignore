@@ -1,0 +1,8 @@
+.idea/*
+graphs/*
+graph/*
+hmm-graphs/*
+*.pyc
+hmm_class/*
+checkpoints/*
+MNIST_data/*
