@@ -14,9 +14,7 @@ SKIP_STEP = 10
 DROPOUT = 0.75
 N_EPOCHS = 1
 
-with tf.name_scope('data'):ze=[1, 2, 2, 1], strides=[1, 2, 2, 1], padding='SAME')
-
-with tf.variable_scope('conv2') as scope:
+with tf.name_scope('data') as scope:
     X = tf.placeholder(tf.float32, [None, 784], name="X")
     Y = tf.placeholder(tf.float32, [None, 10], name="Y")
 dropout = tf.placeholder(tf.float32, name='dropout')
@@ -36,7 +34,8 @@ with tf.variable_scope('conv1') as scope:
     # conv1 = layers.conv2d(images, 32, 5, 1, activation_fn=tf.nn.relu, padding='SAME')
 
 with tf.variable_scope('pool1') as scope:
-    pool1 = tf.nn.max_pool(conv1, ksi
+    pool1 = tf.nn.max_pool(conv1, ksize=[1, 2, 2, 1], strides=[1, 2, 2, 1],
+                           padding='SAME')
     kernel = tf.get_variable('kernels', [5, 5, 32, 64], initializer=tf.truncated_normal_initializer())
     biases = tf.get_variable('biases', [64], initializer=tf.random_normal_initializer())
     conv = tf.nn.conv2d(pool1, kernel, strides=[1, 1, 1, 1], padding='SAME')
